@@ -2,6 +2,11 @@ import os
 import random
 import sys
 
+# los módulos "biblioteca" (fitness, población, cruce, etc.) viven en src/;
+# se agrega esa carpeta a sys.path para poder importarlos igual que antes,
+# sin cambiar ni una línea dentro de esos archivos.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
+
 from leer_parametros_ag import leer_parametros_ag
 from leer_instancia import leer_instancia
 from poblacion import inicializar_poblacion

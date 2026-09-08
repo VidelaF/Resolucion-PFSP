@@ -12,9 +12,18 @@ busca la permutación (secuencia de trabajos) que minimiza el makespan
 
 ## Estructura del proyecto
 
-Módulos reutilizables (biblioteca):
+Programas ejecutables (raíz del proyecto):
+
+- `ag.py` — Algoritmo Genético puro.
+- `memetico.py` — Algoritmo Memético (AG + búsqueda local aplicada al
+  mejor individuo cada N generaciones).
+
+Módulos reutilizables (biblioteca), en `src/`:
 
 - `leer_instancia.py` — parsea instancias en formato Taillard.
+- `leer_parametros_ag.py` — parseo y validación de parámetros de `ag.py`.
+- `leer_parametros_memetico.py` — parseo y validación de parámetros de
+  `memetico.py`.
 - `aleatorios.py` — generadores de número real/entero aleatorio.
 - `poblacion.py` — inicialización de la población (permutaciones aleatorias).
 - `fitness.py` — cálculo del makespan (tabla de tiempos de finalización C(i,j)).
@@ -27,11 +36,8 @@ Módulos reutilizables (biblioteca):
 - `rpd.py` — cálculo del RPD (Relative Percentage Deviation) contra el
   mejor valor conocido de cada instancia.
 
-Parseo de parámetros y programas ejecutables:
-
-- `leer_parametros_ag.py` / `ag.py` — Algoritmo Genético puro.
-- `leer_parametros_memetico.py` / `memetico.py` — Algoritmo Memético
-  (AG + búsqueda local aplicada al mejor individuo cada N generaciones).
+`ag.py` y `memetico.py` agregan `src/` a `sys.path` al iniciar, así que
+importan estos módulos igual que si estuvieran en la misma carpeta.
 
 Datos:
 
