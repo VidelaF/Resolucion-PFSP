@@ -1,0 +1,77 @@
+# PFSP - Algoritmo Genético y Algoritmo Memético
+
+Resolución del *Permutation Flow Shop Scheduling Problem* (PFSP) mediante
+algoritmos evolutivos: un Algoritmo Genético (AG) y un Algoritmo Memético
+(AG + búsqueda local).
+
+## El problema
+
+Dados n trabajos que deben pasar, en el mismo orden, por m máquinas, se
+busca la permutación (secuencia de trabajos) que minimiza el makespan
+(Cmax): el tiempo en que termina el último trabajo en la última máquina.
+
+## Estructura del proyecto
+
+Módulos reutilizables (biblioteca):
+
+- `leer_instancia.py` — parsea instancias en formato Taillard.
+- `aleatorios.py` — generadores de número real/entero aleatorio.
+- `poblacion.py` — inicialización de la población (permutaciones aleatorias).
+- `fitness.py` — cálculo del makespan (tabla de tiempos de finalización C(i,j)).
+- `seleccion.py` — selección por torneo.
+- `cruce.py` — cruce OX (Order Crossover), válido para permutaciones.
+- `mutacion.py` — mutación por intercambio (swap).
+- `busqueda_local.py` — insertion local search (usada por el Memético).
+- `reemplazo.py` — genera la siguiente generación (selección + cruce +
+  mutación), con elitismo opcional.
+- `rpd.py` — cálculo del RPD (Relative Percentage Deviation) contra el
+  mejor valor conocido de cada instancia.
+
+Parseo de parámetros y programas ejecutables:
+
+- `leer_parametros_ag.py` / `ag.py` — Algoritmo Genético puro.
+- `leer_parametros_memetico.py` / `memetico.py` — Algoritmo Memético
+  (AG + búsqueda local aplicada al mejor individuo cada N generaciones).
+
+Datos:
+
+- `instances/taillard/` — instancias estándar de Taillard (1993) y
+  `best_known.csv` con los mejores valores conocidos (LB, UB, y si el
+  óptimo está confirmado), actualizado con resultados de
+  Gmys (2022, *INFORMS Journal on Computing*).
+
+## Requisitos
+
+```
+pip install -r requirements.txt
+```
+
+## Uso
+
+Algoritmo Genético:
+
+```
+python ag.py <semilla> <instancia> <tam_poblacion> <prob_cruza> <prob_mutacion> <num_generaciones>
+```
+
+Ejemplo:
+
+```
+python ag.py 7 instances/taillard/ta001.txt 40 0.9 0.2 15
+```
+
+Algoritmo Memético (agrega la frecuencia de búsqueda local):
+
+```
+python memetico.py <semilla> <instancia> <tam_poblacion> <prob_cruza> <prob_mutacion> <num_generaciones> <frecuencia_bl>
+```
+
+Ejemplo:
+
+```
+python memetico.py 7 instances/taillard/ta001.txt 40 0.9 0.2 15 3
+```
+
+Ambos programas imprimen el progreso por generación, la mejor secuencia
+encontrada, su makespan y el RPD respecto al mejor valor conocido para
+esa instancia.
