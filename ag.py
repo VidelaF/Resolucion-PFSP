@@ -14,10 +14,21 @@ from neh import construir_neh
 from rpd import obtener_mejor_conocido, calcular_rpd, nombre_instancia_desde_ruta
 
 
-def ejecutar_ag(tiempos, n_trabajos, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones):
-    """ejecuta el algoritmo genético sobre una instancia ya leída. retorna (mejor_individuo, mejor_fitness)."""
+def ejecutar_ag(tiempos, n_trabajos, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones,
+                 individuo_neh=None):
+    """ejecuta el algoritmo genético sobre una instancia ya leída. retorna (mejor_individuo, mejor_fitness).
+
+    individuo_neh: individuo ya construido con neh.construir_neh, para sembrar la población
+        inicial sin recalcularlo. Si es None (uso normal desde línea de comandos), se calcula
+        aquí. experimento.py lo calcula una sola vez por instancia y lo reutiliza en las 30
+        semillas, porque NEH es determinista (no depende de la semilla) y recalcularlo en cada
+        corrida es puro costo perdido.
+    """
+    if individuo_neh is None:
+        individuo_neh = construir_neh(tiempos)
+
     poblacion = inicializar_poblacion(tam_poblacion, n_trabajos)
-    poblacion[0] = construir_neh(tiempos)  # siembra un individuo con neh, el resto queda aleatorio
+    poblacion[0] = individuo_neh  # siembra un individuo con neh, el resto queda aleatorio
     fitnesses = [calcular_makespan(individuo, tiempos) for individuo in poblacion]
 
     for generacion in range(1, num_generaciones + 1):

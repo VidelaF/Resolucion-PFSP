@@ -60,6 +60,10 @@ def leer_parametros_memetico(argumentos):
         print("Error: k_mejores debe ser un entero positivo (a cuántos de los mejores individuos se aplica la búsqueda local)")
         sys.exit(1)
 
+    if k_mejores > tam_poblacion:
+        print(f"Error: k_mejores ({k_mejores}) no puede ser mayor que tam_poblacion ({tam_poblacion})")
+        sys.exit(1)
+
     return semilla, instancia, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones, frecuencia_bl, k_mejores
 
 
