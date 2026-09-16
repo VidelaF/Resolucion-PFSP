@@ -2,22 +2,8 @@ from aleatorios import generar_entero_aleatorio
 
 
 def cruce_ox(padre1, padre2):
-    """Cruza dos individuos con el operador OX (Order Crossover).
-
-    Un cruce de un punto "normal" no sirve para permutaciones: cortar y
-    pegar segmentos de dos padres casi siempre produce trabajos repetidos
-    y trabajos faltantes. OX evita esto así:
-
-    1. Se eligen dos puntos de corte al azar y se copia el segmento entre
-       ellos desde padre1 al hijo, tal cual, en las mismas posiciones.
-    2. Las posiciones restantes del hijo se completan con los trabajos de
-       padre2, tomados en el orden en que aparecen en padre2 (empezando
-       justo después del segmento y dando la vuelta al llegar al final),
-       saltando los trabajos que ya quedaron copiados en el paso 1.
-
-    El resultado es siempre una permutación válida: cada trabajo aparece
-    exactamente una vez.
-    """
+    """order crossover: copia un segmento de padre1 y completa con el orden de padre2,
+    saltando lo ya copiado. evita duplicados, a diferencia de un cruce de un punto normal."""
     n = len(padre1)
     punto1 = generar_entero_aleatorio(0, n - 1)
     punto2 = generar_entero_aleatorio(0, n - 1)

@@ -3,15 +3,8 @@ import os
 
 
 def obtener_mejor_conocido(nombre_instancia, ruta_csv):
-    """Busca el mejor makespan conocido (UB) para una instancia en el CSV
-    de valores de referencia.
-
-    nombre_instancia: nombre de la instancia sin extensión, ej. "ta001".
-    ruta_csv: ruta al archivo best_known.csv (columnas Name,n,m,LB,UB,Optimal).
-
-    Retorna el valor UB como entero, o None si la instancia no está en
-    el archivo.
-    """
+    """busca el ub de una instancia en el csv de referencia (columnas name,n,m,lb,ub,optimal).
+    retorna el ub como entero, o none si la instancia no está en el archivo."""
     with open(ruta_csv, "r") as archivo:
         lector = csv.DictReader(archivo)
         for fila in lector:
@@ -21,21 +14,12 @@ def obtener_mejor_conocido(nombre_instancia, ruta_csv):
 
 
 def calcular_rpd(cmax_obtenido, mejor_conocido):
-    """Calcula el RPD (Relative Percentage Deviation) de una solución.
-
-    RPD(%) = (Cmax_obtenido - Cmax_mejor_conocido) / Cmax_mejor_conocido * 100
-
-    Un RPD de 0 significa que se igualó el mejor valor conocido; valores
-    mayores indican qué tan lejos, en porcentaje, quedó la solución
-    obtenida respecto al mejor conocido (nunca debería dar negativo,
-    salvo que se encuentre una solución mejor que la reportada en el CSV).
-    """
+    """rpd(%) = (cmax_obtenido - mejor_conocido) / mejor_conocido * 100. 0% = igualó el mejor conocido."""
     return (cmax_obtenido - mejor_conocido) / mejor_conocido * 100
 
 
 def nombre_instancia_desde_ruta(ruta_instancia):
-    """Extrae el nombre de la instancia (ej. "ta001") desde la ruta de su
-    archivo (ej. "instances/taillard/ta001.txt")."""
+    """nombre de la instancia sin extensión, ej. ta001, a partir de su ruta de archivo."""
     nombre_archivo = os.path.basename(ruta_instancia)
     nombre_sin_extension, _ = os.path.splitext(nombre_archivo)
     return nombre_sin_extension

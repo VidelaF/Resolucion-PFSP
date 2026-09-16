@@ -3,28 +3,15 @@ import os
 
 
 def leer_parametros_memetico(argumentos):
-    """Parsea y valida los parámetros del Algoritmo Memético recibidos
-    por línea de comandos.
-
-    argumentos: lista de argumentos posicionales, sin el nombre del
-        script (sys.argv[1:]), en el orden semilla, instancia,
-        tam_poblacion, prob_cruza, prob_mutacion, num_generaciones,
-        frecuencia_bl.
-
-    frecuencia_bl indica cada cuántas generaciones se aplica la
-    búsqueda local al mejor individuo de la población (ej. 1 = todas
-    las generaciones, 5 = una de cada cinco).
-
-    Retorna la tupla (semilla, instancia, tam_poblacion, prob_cruza,
-    prob_mutacion, num_generaciones, frecuencia_bl) si todos los
-    parámetros son válidos. Si alguno es inválido, imprime un mensaje
-    describiendo el problema y termina el programa (sys.exit(1)).
-    """
-    if len(argumentos) != 7:
+    """parsea y valida los parámetros del memético por línea de comandos.
+    frecuencia_bl: cada cuántas generaciones se aplica la búsqueda local.
+    k_mejores (opcional, por defecto 1): a cuántos de los mejores individuos se aplica cada vez.
+    retorna la tupla de parámetros, o termina el programa si alguno es inválido."""
+    if len(argumentos) not in (7, 8):
         print("Error: número incorrecto de parámetros")
         print(
             "Uso: python memetico.py semilla instancia tam_poblacion prob_cruza "
-            "prob_mutacion num_generaciones frecuencia_bl"
+            "prob_mutacion num_generaciones frecuencia_bl [k_mejores]"
         )
         sys.exit(1)
 
@@ -36,11 +23,12 @@ def leer_parametros_memetico(argumentos):
         prob_mutacion = float(argumentos[4].replace(",", "."))
         num_generaciones = int(argumentos[5])
         frecuencia_bl = int(argumentos[6])
+        k_mejores = int(argumentos[7]) if len(argumentos) == 8 else 1
     except ValueError:
         print("Error: uno de los parámetros numéricos no tiene un formato válido")
         print(
             "Uso: python memetico.py semilla instancia tam_poblacion prob_cruza "
-            "prob_mutacion num_generaciones frecuencia_bl"
+            "prob_mutacion num_generaciones frecuencia_bl [k_mejores]"
         )
         sys.exit(1)
 
@@ -68,12 +56,16 @@ def leer_parametros_memetico(argumentos):
         print("Error: frecuencia_bl debe ser un entero positivo (cada cuántas generaciones se aplica la búsqueda local)")
         sys.exit(1)
 
-    return semilla, instancia, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones, frecuencia_bl
+    if k_mejores <= 0:
+        print("Error: k_mejores debe ser un entero positivo (a cuántos de los mejores individuos se aplica la búsqueda local)")
+        sys.exit(1)
+
+    return semilla, instancia, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones, frecuencia_bl, k_mejores
 
 
 if __name__ == "__main__":
     parametros = leer_parametros_memetico(sys.argv[1:])
-    semilla, instancia, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones, frecuencia_bl = parametros
+    semilla, instancia, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones, frecuencia_bl, k_mejores = parametros
 
     print("semilla:", semilla)
     print("instancia:", instancia)
@@ -82,3 +74,4 @@ if __name__ == "__main__":
     print("prob_mutacion:", prob_mutacion)
     print("num_generaciones:", num_generaciones)
     print("frecuencia_bl:", frecuencia_bl)
+    print("k_mejores:", k_mejores)

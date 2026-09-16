@@ -1,7 +1,7 @@
 import os
 
 import matplotlib
-matplotlib.use("Agg")  # sin pantalla disponible al correr desde consola
+matplotlib.use("Agg")  # sin pantalla al correr desde consola
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy import stats
@@ -17,19 +17,14 @@ ORDEN_METODOS = ["AG", "Memetico"]
 
 def cargar_resultados():
     datos = pd.read_csv(RUTA_ENTRADA)
-    # las instancias se ordenan de menor a mayor (20x5, 50x10, 100x10) en
-    # vez de alfabéticamente, para que tablas y gráficos se lean de forma
-    # consistente con el tamaño del problema.
+    # orden por tamaño de instancia, no alfabético
     datos["instancia"] = pd.Categorical(datos["instancia"], categories=ORDEN_INSTANCIAS, ordered=True)
     datos["metodo"] = pd.Categorical(datos["metodo"], categories=ORDEN_METODOS, ordered=True)
     return datos
 
 
 def calcular_resumen(datos):
-    """Agrupa por instancia y método, y calcula estadísticas descriptivas
-    de Cmax, RPD y tiempo de ejecución sobre las 30 semillas de cada
-    combinación.
-    """
+    """promedio, desviación estándar y mejor valor de cmax/rpd/tiempo por instancia y método."""
     resumen = datos.groupby(["instancia", "metodo"], observed=True).agg(
         n_corridas=("semilla", "count"),
         cmax_promedio=("cmax", "mean"),
@@ -43,9 +38,7 @@ def calcular_resumen(datos):
 
 
 def graficar_rpd_por_instancia(datos):
-    """Un boxplot de RPD (AG vs Memético) por cada instancia, en subplots
-    lado a lado. Mientras más bajo el RPD, mejor la solución.
-    """
+    """boxplot de rpd (ag vs memético) por instancia. más bajo es mejor."""
     fig, ejes = plt.subplots(1, len(ORDEN_INSTANCIAS), figsize=(12, 5), sharey=False)
 
     for eje, instancia in zip(ejes, ORDEN_INSTANCIAS):
@@ -65,10 +58,7 @@ def graficar_rpd_por_instancia(datos):
 
 
 def graficar_tiempo_por_instancia(datos):
-    """Barras con el tiempo promedio de ejecución por método e instancia.
-    Sirve para discutir en el informe el costo computacional de agregar
-    búsqueda local (explotación) frente al AG puro.
-    """
+    """barras de tiempo promedio por método e instancia: costo de la búsqueda local."""
     resumen_tiempo = datos.groupby(["instancia", "metodo"], observed=True)["tiempo_segundos"].mean().unstack()
     resumen_tiempo = resumen_tiempo.reindex(ORDEN_INSTANCIAS)[ORDEN_METODOS]
 
@@ -85,15 +75,8 @@ def graficar_tiempo_por_instancia(datos):
 
 
 def aplicar_test_estadistico(datos):
-    """Test de Wilcoxon (rangos con signo) para muestras pareadas: cada
-    semilla se corrió con AG y con Memético sobre la misma instancia, así
-    que se puede comparar el RPD par a par en vez de como dos muestras
-    independientes. Se usa Wilcoxon (no un t-test) porque no se asume que
-    el RPD siga una distribución normal.
-
-    Hipótesis nula: no hay diferencia sistemática entre el RPD del AG y
-    el del Memético. Se rechaza con un nivel de significancia de 0.05.
-    """
+    """wilcoxon pareado por semilla: compara rpd de ag y memético en la misma instancia
+    y semilla. no asume normalidad, a diferencia de un t-test."""
     print("Test de Wilcoxon (RPD, AG vs Memético, pareado por semilla)")
     print("-" * 60)
 

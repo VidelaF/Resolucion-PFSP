@@ -2,9 +2,7 @@ import os
 import random
 import sys
 
-# los módulos "biblioteca" (fitness, población, cruce, etc.) viven en src/;
-# se agrega esa carpeta a sys.path para poder importarlos igual que antes,
-# sin cambiar ni una línea dentro de esos archivos.
+# módulos de src/ en el path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
 
 from leer_parametros_memetico import leer_parametros_memetico
@@ -13,28 +11,33 @@ from poblacion import inicializar_poblacion
 from fitness import calcular_makespan
 from reemplazo import generar_nueva_poblacion
 from busqueda_local import busqueda_local_insercion
+from neh import construir_neh
 from rpd import obtener_mejor_conocido, calcular_rpd, nombre_instancia_desde_ruta
 
 
-def ejecutar_memetico(tiempos, n_trabajos, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones, frecuencia_bl):
-    """Ejecuta el Algoritmo Memético: un Algoritmo Genético que, cada
-    frecuencia_bl generaciones, aplica búsqueda local al mejor individuo
-    de la población (no a toda la población, por costo computacional).
-
-    Retorna una tupla (mejor_individuo, mejor_fitness).
-    """
+def ejecutar_memetico(tiempos, n_trabajos, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones,
+                       frecuencia_bl, k_mejores=1):
+    """algoritmo genético que cada frecuencia_bl generaciones aplica búsqueda local a los
+    k_mejores individuos de la población. retorna (mejor_individuo, mejor_fitness)."""
     poblacion = inicializar_poblacion(tam_poblacion, n_trabajos)
+    poblacion[0] = construir_neh(tiempos)  # siembra un individuo con neh, el resto queda aleatorio
     fitnesses = [calcular_makespan(individuo, tiempos) for individuo in poblacion]
 
     for generacion in range(1, num_generaciones + 1):
-        poblacion = generar_nueva_poblacion(poblacion, fitnesses, tiempos, prob_cruza, prob_mutacion)
+        # mutación adaptativa: decae de prob_mutacion al 10% de ese valor hacia la última generación
+        fraccion_avance = generacion / num_generaciones
+        prob_mutacion_actual = prob_mutacion * (1 - 0.9 * fraccion_avance)
+
+        poblacion = generar_nueva_poblacion(poblacion, fitnesses, tiempos, prob_cruza, prob_mutacion_actual)
         fitnesses = [calcular_makespan(individuo, tiempos) for individuo in poblacion]
 
         if generacion % frecuencia_bl == 0:
-            indice_mejor = fitnesses.index(min(fitnesses))
-            mejorado = busqueda_local_insercion(poblacion[indice_mejor], tiempos)
-            poblacion[indice_mejor] = mejorado
-            fitnesses[indice_mejor] = calcular_makespan(mejorado, tiempos)
+            # búsqueda local sobre los k_mejores individuos, no toda la población (costo)
+            indices_ordenados = sorted(range(len(fitnesses)), key=lambda i: fitnesses[i])
+            for indice in indices_ordenados[:k_mejores]:
+                mejorado = busqueda_local_insercion(poblacion[indice], tiempos)
+                poblacion[indice] = mejorado
+                fitnesses[indice] = calcular_makespan(mejorado, tiempos)
 
         print(f"generación {generacion}/{num_generaciones}: mejor fitness = {min(fitnesses)}")
 
@@ -44,7 +47,7 @@ def ejecutar_memetico(tiempos, n_trabajos, tam_poblacion, prob_cruza, prob_mutac
 
 def main():
     parametros = leer_parametros_memetico(sys.argv[1:])
-    semilla, ruta_instancia, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones, frecuencia_bl = parametros
+    semilla, ruta_instancia, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones, frecuencia_bl, k_mejores = parametros
 
     random.seed(semilla)
 
@@ -58,12 +61,12 @@ def main():
     print(
         f"Parámetros: semilla={semilla}, tam_poblacion={tam_poblacion}, "
         f"prob_cruza={prob_cruza}, prob_mutacion={prob_mutacion}, "
-        f"num_generaciones={num_generaciones}, frecuencia_bl={frecuencia_bl}"
+        f"num_generaciones={num_generaciones}, frecuencia_bl={frecuencia_bl}, k_mejores={k_mejores}"
     )
     print()
 
     mejor_individuo, mejor_fitness = ejecutar_memetico(
-        tiempos, n_trabajos, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones, frecuencia_bl
+        tiempos, n_trabajos, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones, frecuencia_bl, k_mejores
     )
 
     print()

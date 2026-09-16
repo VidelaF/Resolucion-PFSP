@@ -3,19 +3,8 @@ import os
 
 
 def leer_parametros_ag(argumentos):
-    """Parsea y valida los parámetros del Algoritmo Genético recibidos
-    por línea de comandos.
-
-    argumentos: lista de argumentos posicionales, sin el nombre del
-        script (es decir, sys.argv[1:]), en el orden semilla, instancia,
-        tam_poblacion, prob_cruza, prob_mutacion, num_generaciones.
-
-    Retorna la tupla (semilla, instancia, tam_poblacion, prob_cruza,
-    prob_mutacion, num_generaciones) si todos los parámetros son válidos.
-
-    Si algún parámetro es inválido, imprime un mensaje describiendo el
-    problema y termina el programa (sys.exit(1)).
-    """
+    """parsea y valida los parámetros del ag por línea de comandos.
+    retorna la tupla de parámetros, o termina el programa si alguno es inválido."""
     if len(argumentos) != 6:
         print("Error: número incorrecto de parámetros")
         print("Uso: python ag.py semilla instancia tam_poblacion prob_cruza prob_mutacion num_generaciones")

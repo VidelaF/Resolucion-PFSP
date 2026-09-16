@@ -2,17 +2,7 @@ from aleatorios import generar_entero_aleatorio
 
 
 def mutar_intercambio(individuo):
-    """Aplica mutación por intercambio (swap mutation) a un individuo.
-
-    Elige dos posiciones al azar dentro de la permutación e intercambia
-    los trabajos que están en ellas. Es la mutación más simple para
-    permutaciones: al ser un intercambio, el resultado sigue siendo
-    automáticamente una permutación válida (no puede generar trabajos
-    repetidos ni faltantes).
-
-    No modifica el individuo recibido: retorna una copia mutada, para
-    evitar efectos secundarios inesperados sobre la población original.
-    """
+    """swap de dos posiciones al azar. retorna una copia, no modifica el original."""
     n = len(individuo)
     mutado = list(individuo)
     pos1 = generar_entero_aleatorio(0, n - 1)

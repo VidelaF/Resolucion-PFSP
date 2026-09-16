@@ -1,23 +1,6 @@
 def calcular_tabla_tiempos_finalizacion(secuencia, tiempos):
-    """Construye la tabla completa de tiempos de finalización C(i,j) para
-    una secuencia de trabajos, tal como se describe en el enunciado.
-
-    secuencia: lista de índices de trabajos (0-indexados), en el orden
-        en que se procesan. Debe ser una permutación de range(n_trabajos).
-    tiempos: matriz de tiempos de procesamiento, filas = máquinas,
-        columnas = trabajos (tiempos[maquina][trabajo]).
-
-    Retorna una matriz (lista de listas) de tamaño n_trabajos x
-    n_maquinas. tabla[i][j] es C(i,j): el tiempo en que el i-ésimo
-    trabajo de la secuencia termina de procesarse en la máquina j.
-
-    Se calcula con la recurrencia:
-        C(i,j) = max(C(i-1,j), C(i,j-1)) + p(secuencia[i], j)
-    donde C(i-1,j) es el tiempo en que la máquina j quedó libre del
-    trabajo anterior, y C(i,j-1) es el tiempo en que el trabajo actual
-    quedó disponible al salir de la máquina anterior. Para el primer
-    trabajo (i=0) y la primera máquina (j=0) esos valores son 0.
-    """
+    """tabla c(i,j): tiempo en que el trabajo i de la secuencia termina en la máquina j.
+    c(i,j) = max(c(i-1,j), c(i,j-1)) + p(secuencia[i], j)."""
     n_trabajos = len(secuencia)
     n_maquinas = len(tiempos)
 
@@ -34,23 +17,17 @@ def calcular_tabla_tiempos_finalizacion(secuencia, tiempos):
 
 
 def calcular_makespan(secuencia, tiempos):
-    """Calcula el makespan (Cmax) de una secuencia de trabajos en un flow shop.
-
-    Arma la tabla completa de tiempos de finalización C(i,j) (ver
-    calcular_tabla_tiempos_finalizacion) y retorna su última celda: el
-    tiempo en que termina el último trabajo de la secuencia en la
-    última máquina, que es la definición de Cmax.
-    """
+    """makespan (cmax): última celda de la tabla c(i,j)."""
     tabla = calcular_tabla_tiempos_finalizacion(secuencia, tiempos)
     return tabla[-1][-1]
 
 
 if __name__ == "__main__":
-    # Ejemplo del enunciado (sección 3): 3 trabajos, 2 máquinas.
-    # Trabajo  M1  M2
-    # J1        5   3
-    # J2        2   6
-    # J3        4   4
+    # ejemplo del enunciado: 3 trabajos, 2 máquinas
+    # trabajo  m1  m2
+    # j1        5   3
+    # j2        2   6
+    # j3        4   4
     tiempos_ejemplo = [
         [5, 2, 4],  # M1: J1, J2, J3
         [3, 6, 4],  # M2: J1, J2, J3
@@ -71,7 +48,7 @@ if __name__ == "__main__":
     makespan_213 = calcular_makespan(secuencia_213, tiempos_ejemplo)
     print(f"π = (J2, J1, J3) -> Cmax = {makespan_213}")
 
-    # Sanity check con una instancia real de Taillard.
+    # sanity check con ta001
     from leer_instancia import leer_instancia
 
     n, m, tiempos = leer_instancia("instances/taillard/ta001.txt")

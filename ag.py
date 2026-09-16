@@ -2,9 +2,7 @@ import os
 import random
 import sys
 
-# los módulos "biblioteca" (fitness, población, cruce, etc.) viven en src/;
-# se agrega esa carpeta a sys.path para poder importarlos igual que antes,
-# sin cambiar ni una línea dentro de esos archivos.
+# módulos de src/ en el path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
 
 from leer_parametros_ag import leer_parametros_ag
@@ -12,20 +10,22 @@ from leer_instancia import leer_instancia
 from poblacion import inicializar_poblacion
 from fitness import calcular_makespan
 from reemplazo import generar_nueva_poblacion
+from neh import construir_neh
 from rpd import obtener_mejor_conocido, calcular_rpd, nombre_instancia_desde_ruta
 
 
 def ejecutar_ag(tiempos, n_trabajos, tam_poblacion, prob_cruza, prob_mutacion, num_generaciones):
-    """Ejecuta el Algoritmo Genético completo sobre una instancia ya leída.
-
-    Retorna una tupla (mejor_individuo, mejor_fitness) con la mejor
-    secuencia encontrada y su makespan.
-    """
+    """ejecuta el algoritmo genético sobre una instancia ya leída. retorna (mejor_individuo, mejor_fitness)."""
     poblacion = inicializar_poblacion(tam_poblacion, n_trabajos)
+    poblacion[0] = construir_neh(tiempos)  # siembra un individuo con neh, el resto queda aleatorio
     fitnesses = [calcular_makespan(individuo, tiempos) for individuo in poblacion]
 
     for generacion in range(1, num_generaciones + 1):
-        poblacion = generar_nueva_poblacion(poblacion, fitnesses, tiempos, prob_cruza, prob_mutacion)
+        # mutación adaptativa: decae de prob_mutacion al 10% de ese valor hacia la última generación
+        fraccion_avance = generacion / num_generaciones
+        prob_mutacion_actual = prob_mutacion * (1 - 0.9 * fraccion_avance)
+
+        poblacion = generar_nueva_poblacion(poblacion, fitnesses, tiempos, prob_cruza, prob_mutacion_actual)
         fitnesses = [calcular_makespan(individuo, tiempos) for individuo in poblacion]
         print(f"generación {generacion}/{num_generaciones}: mejor fitness = {min(fitnesses)}")
 

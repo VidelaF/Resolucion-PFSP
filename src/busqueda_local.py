@@ -2,28 +2,8 @@ from fitness import calcular_makespan
 
 
 def busqueda_local_insercion(individuo, tiempos):
-    """Mejora un individuo mediante búsqueda local por inserción.
-
-    Para cada trabajo de la secuencia, se prueba sacarlo de su posición
-    actual e insertarlo en cada una de las demás posiciones. Apenas se
-    encuentra un movimiento que reduce el makespan, se aplica de
-    inmediato y se reinicia la búsqueda desde el principio (estrategia
-    "first-improvement": más simple y más rápida por movimiento que
-    evaluar todos los movimientos posibles antes de elegir el mejor).
-
-    El proceso se repite hasta que una pasada completa no encuentra
-    ningún movimiento que mejore el makespan actual, es decir, hasta
-    llegar a un óptimo local respecto al vecindario de inserción.
-
-    No modifica el individuo recibido: retorna una copia mejorada.
-
-    Costo: cada movimiento evaluado cuesta O(n_trabajos * n_maquinas)
-    (una llamada a calcular_makespan), y se pueden evaluar hasta
-    n_trabajos^2 movimientos por pasada. Para instancias grandes (100+
-    trabajos) conviene no aplicar esta función a toda la población en
-    cada generación, sino con una frecuencia controlada (por ejemplo,
-    solo al mejor individuo, o cada cierto número de generaciones).
-    """
+    """mueve cada trabajo a cada posición posible; aplica la primera mejora encontrada
+    (first-improvement) y reinicia, hasta llegar a un óptimo local."""
     mejor = list(individuo)
     fitness_mejor = calcular_makespan(mejor, tiempos)
     n = len(mejor)
@@ -52,9 +32,7 @@ def busqueda_local_insercion(individuo, tiempos):
 
 
 if __name__ == "__main__":
-    # Ejemplo del enunciado: con π=(J2,J1,J3) el makespan ya daba 15
-    # (mejor que π=(J1,J2,J3), que da 18). Verificamos que la búsqueda
-    # local, partida desde la peor, converge a la misma o mejor solución.
+    # ejemplo del enunciado: π=(J2,J1,J3) da cmax=15, mejor que π=(J1,J2,J3) con cmax=18
     tiempos_ejemplo = [
         [5, 2, 4],
         [3, 6, 4],
@@ -64,7 +42,6 @@ if __name__ == "__main__":
     print(f"antes: {peor_secuencia} -> Cmax = {calcular_makespan(peor_secuencia, tiempos_ejemplo)}")
     print(f"después: {mejorado} -> Cmax = {calcular_makespan(mejorado, tiempos_ejemplo)}")
 
-    # Sanity check con una instancia real de Taillard.
     from leer_instancia import leer_instancia
 
     n, m, tiempos = leer_instancia("instances/taillard/ta001.txt")

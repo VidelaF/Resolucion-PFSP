@@ -2,12 +2,12 @@ import numpy as np
 
 
 def leer_instancia(ruta):
+    """lee una instancia taillard. retorna (n_trabajos, n_maquinas, tiempos)."""
     archivo = open(ruta, "r")
     lineas = archivo.readlines()
     archivo.close()
 
-    # se descartan líneas vacías y líneas de comentario (empiezan con '#'),
-    # que es como vienen los archivos oficiales de Taillard
+    # descarta líneas vacías y comentarios (empiezan con #), formato taillard
     lineas_utiles = []
     for linea in lineas:
         linea = linea.strip()
@@ -24,12 +24,7 @@ def leer_instancia(ruta):
         fila_numeros = [int(x) for x in fila]
         tiempos.append(fila_numeros)
 
-    # matriz de tiempos como array de numpy: filas = máquinas,
-    # columnas = trabajos, tal como vienen en el archivo. Se arma primero
-    # como lista de listas y se convierte al final porque construir un
-    # array de numpy fila por fila (con np.append o concatenate) es
-    # notoriamente más lento que llenar una lista y convertir una sola vez.
-    tiempos = np.array(tiempos)
+    tiempos = np.array(tiempos)  # filas = máquinas, columnas = trabajos
 
     return n_trabajos, n_maquinas, tiempos
 

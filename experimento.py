@@ -6,8 +6,7 @@ import random
 import sys
 import time
 
-# los módulos "biblioteca" viven en src/; se agrega esa carpeta a sys.path
-# para poder importarlos igual que hacen ag.py y memetico.py.
+# módulos de src/ en el path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
 
 from ag import ejecutar_ag
@@ -16,9 +15,7 @@ from leer_instancia import leer_instancia
 from rpd import obtener_mejor_conocido, calcular_rpd, nombre_instancia_desde_ruta
 
 
-# --- Parámetros del experimento ---
-# Tres tamaños de instancia, como pide el enunciado (sección 5): chica,
-# mediana y grande, para poder analizar cómo escala cada método.
+# tres tamaños de instancia: chica, mediana y grande
 INSTANCIAS = [
     "instances/taillard/ta001.txt",  # 20 trabajos x 5 máquinas
     "instances/taillard/ta041.txt",  # 50 trabajos x 10 máquinas
@@ -29,16 +26,15 @@ TAM_POBLACION = 40
 PROB_CRUZA = 0.9
 PROB_MUTACION = 0.2
 NUM_GENERACIONES = 100
-# Cada 50 generaciones -> 2 aplicaciones de búsqueda local por corrida
-# (en la generación 50 y en la 100). Se eligió este valor, en vez de uno
-# más frecuente, por el costo de busqueda_local_insercion en instancias
-# grandes: en ta071 (100 trabajos) una sola pasada cuesta ~43s, así que
-# aplicarla cada 10 generaciones (10 veces por corrida) haría que el
-# experimento completo (3 instancias x 30 semillas x 2 métodos) tomara
-# varias horas en vez de minutos. Con 2 aplicaciones por corrida ya se
-# observa con claridad el efecto de explotación del Memético frente al
-# AG puro (ver resultados).
-FRECUENCIA_BL = 50
+# frecuencia de búsqueda local por instancia: en ta071 una pasada cuesta ~43s
+# y se mantiene en 50 (2 aplicaciones por corrida); en instancias chicas
+# una pasada es casi instantánea, así que se aplica más seguido
+FRECUENCIA_BL_POR_INSTANCIA = {
+    "ta001": 10,
+    "ta041": 25,
+    "ta071": 50,
+}
+K_MEJORES_BL = 2  # además del mejor, búsqueda local sobre el segundo mejor
 
 RUTA_BEST_KNOWN = "instances/taillard/best_known.csv"
 RUTA_SALIDA = "resultados/experimento.csv"
@@ -49,22 +45,12 @@ COLUMNAS_CSV = [
 ]
 
 
-def ejecutar_una_corrida(metodo, tiempos, n_trabajos, semilla):
-    """Ejecuta una corrida del AG o del Memético sobre una instancia ya
-    leída. Fija la semilla antes de correr, para que cada método parta
-    de la misma población inicial en cada repetición (comparación justa).
-
-    ag.py y memetico.py imprimen el progreso por generación por diseño,
-    pensado para uso interactivo; acá se silencia esa salida (no se
-    modifica ninguno de los dos archivos) para no imprimir miles de
-    líneas durante el experimento.
-
-    Retorna (cmax, tiempo_segundos).
-    """
-    random.seed(semilla)
+def ejecutar_una_corrida(metodo, tiempos, n_trabajos, semilla, frecuencia_bl):
+    """corre ag o memético con la semilla dada. retorna (cmax, tiempo_segundos)."""
+    random.seed(semilla)  # misma semilla en ag y memético: misma población inicial, comparación justa
     inicio = time.time()
 
-    with contextlib.redirect_stdout(io.StringIO()):
+    with contextlib.redirect_stdout(io.StringIO()):  # silencia el progreso por generación
         if metodo == "AG":
             _, cmax = ejecutar_ag(
                 tiempos, n_trabajos, TAM_POBLACION, PROB_CRUZA, PROB_MUTACION, NUM_GENERACIONES
@@ -72,7 +58,7 @@ def ejecutar_una_corrida(metodo, tiempos, n_trabajos, semilla):
         else:
             _, cmax = ejecutar_memetico(
                 tiempos, n_trabajos, TAM_POBLACION, PROB_CRUZA, PROB_MUTACION,
-                NUM_GENERACIONES, FRECUENCIA_BL
+                NUM_GENERACIONES, frecuencia_bl, K_MEJORES_BL
             )
 
     tiempo_segundos = time.time() - inicio
@@ -97,11 +83,12 @@ def main():
             n_trabajos, n_maquinas, tiempos = leer_instancia(ruta_instancia)
             nombre_instancia = nombre_instancia_desde_ruta(ruta_instancia)
             mejor_conocido = obtener_mejor_conocido(nombre_instancia, RUTA_BEST_KNOWN)
+            frecuencia_bl = FRECUENCIA_BL_POR_INSTANCIA[nombre_instancia]
 
             for metodo in ("AG", "Memetico"):
                 for semilla in SEMILLAS:
                     corrida_actual += 1
-                    cmax, tiempo_segundos = ejecutar_una_corrida(metodo, tiempos, n_trabajos, semilla)
+                    cmax, tiempo_segundos = ejecutar_una_corrida(metodo, tiempos, n_trabajos, semilla, frecuencia_bl)
 
                     if mejor_conocido is not None:
                         rpd = calcular_rpd(cmax, mejor_conocido)
@@ -122,10 +109,7 @@ def main():
                         "rpd": rpd_texto,
                         "tiempo_segundos": f"{tiempo_segundos:.3f}",
                     })
-                    # flush inmediato: si el proceso se corta a mitad de
-                    # camino (son bastantes minutos de corrida), no se
-                    # pierden los resultados ya calculados.
-                    archivo_csv.flush()
+                    archivo_csv.flush()  # no perder resultados si se corta a mitad de camino
 
                     transcurrido_min = (time.time() - inicio_total) / 60
                     print(

@@ -6,23 +6,9 @@ from mutacion import mutar_intercambio
 
 
 def generar_nueva_poblacion(poblacion, fitnesses, tiempos, prob_cruza, prob_mutacion, con_elitismo=True):
-    """Genera la siguiente generación de la población.
-
-    Para cada individuo nuevo: se seleccionan dos padres por torneo, se
-    cruzan con probabilidad prob_cruza (si no, el hijo es una copia del
-    primer padre) y el resultado se muta con probabilidad prob_mutacion.
-    Se repite hasta juntar tam_poblacion individuos nuevos.
-
-    Si con_elitismo es True, el mejor individuo de la población actual
-    se guarda antes de generar la nueva y, al final, reemplaza al peor
-    individuo de la nueva población si es mejor que este. Esto garantiza
-    que el mejor fitness nunca empeore de una generación a la siguiente.
-
-    poblacion, fitnesses: población actual y sus makespans, alineados
-        por índice (mismo formato que usa seleccionar_por_torneo).
-    tiempos: matriz de tiempos de procesamiento de la instancia, para
-        poder recalcular el fitness de los individuos nuevos.
-    """
+    """selección + cruce + mutación para armar la siguiente generación.
+    con_elitismo=true: el mejor individuo actual reemplaza al peor de la nueva población
+    si es mejor que este, para que el mejor fitness nunca empeore entre generaciones."""
     tam_poblacion = len(poblacion)
 
     if con_elitismo:

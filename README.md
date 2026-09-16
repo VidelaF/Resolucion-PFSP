@@ -30,11 +30,25 @@ Módulos reutilizables (biblioteca), en `src/`:
 - `seleccion.py` — selección por torneo.
 - `cruce.py` — cruce OX (Order Crossover), válido para permutaciones.
 - `mutacion.py` — mutación por intercambio (swap).
-- `busqueda_local.py` — insertion local search (usada por el Memético).
+- `busqueda_local.py` — insertion local search, first-improvement
+  (usada por el Memético).
 - `reemplazo.py` — genera la siguiente generación (selección + cruce +
   mutación), con elitismo opcional.
+- `neh.py` — heurística constructiva NEH (Nawaz, Enscore y Ham, 1983),
+  usada para sembrar un individuo de buena calidad en la población
+  inicial del AG y del Memético.
 - `rpd.py` — cálculo del RPD (Relative Percentage Deviation) contra el
   mejor valor conocido de cada instancia.
+
+Mejoras incorporadas sobre la versión base (ver también la sección
+"Trabajo de Investigación" del informe):
+
+- **Semilla NEH**: en `ag.py` y `memetico.py`, un individuo de la
+  población inicial se reemplaza por la solución de `neh.construir_neh`
+  en vez de ser aleatorio.
+- **Mutación adaptativa**: `prob_mutacion` se interpreta como valor
+  inicial y decae linealmente hasta el 10% de ese valor en la última
+  generación (más exploración al principio, más explotación al final).
 
 `ag.py` y `memetico.py` agregan `src/` a `sys.path` al iniciar, así que
 importan estos módulos igual que si estuvieran en la misma carpeta.
@@ -66,16 +80,23 @@ Ejemplo:
 python ag.py 7 instances/taillard/ta001.txt 40 0.9 0.2 15
 ```
 
-Algoritmo Memético (agrega la frecuencia de búsqueda local):
+Algoritmo Memético (agrega la frecuencia de búsqueda local, y opcionalmente
+cuántos de los mejores individuos la reciben en cada aplicación):
 
 ```
-python memetico.py <semilla> <instancia> <tam_poblacion> <prob_cruza> <prob_mutacion> <num_generaciones> <frecuencia_bl>
+python memetico.py <semilla> <instancia> <tam_poblacion> <prob_cruza> <prob_mutacion> <num_generaciones> <frecuencia_bl> [k_mejores]
 ```
 
-Ejemplo:
+Ejemplo (k_mejores omitido, por defecto 1: solo el mejor individuo):
 
 ```
 python memetico.py 7 instances/taillard/ta001.txt 40 0.9 0.2 15 3
+```
+
+Ejemplo aplicando búsqueda local a los 2 mejores individuos en cada aplicación:
+
+```
+python memetico.py 7 instances/taillard/ta001.txt 40 0.9 0.2 15 3 2
 ```
 
 Ambos programas imprimen el progreso por generación, la mejor secuencia
