@@ -6,9 +6,6 @@ from mutacion import mutar_intercambio
 
 
 def generar_nueva_poblacion(poblacion, fitnesses, tiempos, prob_cruza, prob_mutacion, con_elitismo=True):
-    """selección + cruce + mutación para armar la siguiente generación.
-    con_elitismo=true: el mejor individuo actual reemplaza al peor de la nueva población
-    si es mejor que este, para que el mejor fitness nunca empeore entre generaciones."""
     tam_poblacion = len(poblacion)
 
     if con_elitismo:

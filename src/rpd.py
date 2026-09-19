@@ -3,8 +3,6 @@ import os
 
 
 def obtener_mejor_conocido(nombre_instancia, ruta_csv):
-    """busca el ub de una instancia en el csv de referencia (columnas name,n,m,lb,ub,optimal).
-    retorna el ub como entero, o none si la instancia no está en el archivo."""
     with open(ruta_csv, "r") as archivo:
         lector = csv.DictReader(archivo)
         for fila in lector:

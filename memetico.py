@@ -20,11 +20,6 @@ def ejecutar_memetico(tiempos, n_trabajos, tam_poblacion, prob_cruza, prob_mutac
     """algoritmo genético que cada frecuencia_bl generaciones aplica búsqueda local a los
     k_mejores individuos de la población. retorna (mejor_individuo, mejor_fitness).
 
-    individuo_neh: individuo ya construido con neh.construir_neh, para sembrar la población
-        inicial sin recalcularlo. Si es None (uso normal desde línea de comandos), se calcula
-        aquí. experimento.py lo calcula una sola vez por instancia y lo reutiliza en las 30
-        semillas, porque NEH es determinista (no depende de la semilla) y recalcularlo en cada
-        corrida es puro costo perdido.
     """
     if individuo_neh is None:
         individuo_neh = construir_neh(tiempos)

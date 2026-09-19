@@ -2,9 +2,6 @@ from fitness import calcular_makespan
 
 
 def construir_neh(tiempos):
-    """heurística neh (nawaz, enscore y ham, 1983): ordena los trabajos por tiempo total
-    descendente y los inserta uno a uno en la posición que da el menor makespan parcial.
-    determinista, sin aleatoriedad. usada para sembrar un individuo de la población inicial."""
     n_maquinas = len(tiempos)
     n_trabajos = len(tiempos[0])
 

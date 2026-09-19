@@ -3,8 +3,7 @@ import os
 
 
 def leer_parametros_ag(argumentos):
-    """parsea y valida los parámetros del ag por línea de comandos.
-    retorna la tupla de parámetros, o termina el programa si alguno es inválido."""
+    
     if len(argumentos) != 6:
         print("Error: número incorrecto de parámetros")
         print("Uso: python ag.py semilla instancia tam_poblacion prob_cruza prob_mutacion num_generaciones")

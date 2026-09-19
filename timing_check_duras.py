@@ -1,13 +1,4 @@
-"""Medición rápida de tiempo para instancias 'duras' (20 máquinas) antes de
-decidir cuántas semillas correr con ellas en el experimento.
 
-Mide: NEH (una vez), una corrida de AG, una corrida de Memético, para cada
-instancia indicada en INSTANCIAS_A_MEDIR. Con eso se extrapola el tiempo
-total para 30 semillas (o el número que se decida) antes de lanzar nada.
-
-Uso: parado en la raíz del proyecto (junto a ag.py, memetico.py):
-    python timing_check_duras.py
-"""
 import contextlib
 import io
 import os
@@ -22,17 +13,17 @@ from memetico import ejecutar_memetico
 from ag import ejecutar_ag
 from neh import construir_neh
 
-# Mismos parámetros base que experimento.py: tam_poblacion=40, prob_cruza=0.9,
-# prob_mutacion=0.2, num_generaciones=100, k_mejores=2.
-# frecuencia_bl=50 es la que se usó para ta071 (la instancia más grande del
-# set original); se reutiliza acá como punto de partida razonable, a falta
-# de un valor calibrado específico para estas instancias nuevas.
+#Mismos parámetros base que experimento.py: tam_poblacion=40, prob_cruza=0.9,
+#prob_mutacion=0.2, num_generaciones=100, k_mejores=2.
+#frecuencia_bl=50 es la que se usó para ta071 (la instancia más grande del
+#set original); se reutiliza acá como punto de partida razonable, a falta
+#de un valor calibrado específico para estas instancias nuevas.
 FRECUENCIA_BL = 50
 K_MEJORES = 2
 
 INSTANCIAS_A_MEDIR = [
-    "instances/taillard/ta090.txt",  # 100x20, la más rápida del set duro reportado (78s con 128 GPUs)
-    "instances/taillard/ta058.txt",  # 50x20, la más costosa del set duro reportado (13h17 con 256 GPUs)
+    "instances/taillard/ta090.txt",  #100x20, la más rápida del set duro reportado (78s con 128 GPUs)
+    "instances/taillard/ta058.txt",  #50x20, la más costosa del set duro reportado (13h17 con 256 GPUs)
 ]
 
 for ruta in INSTANCIAS_A_MEDIR:

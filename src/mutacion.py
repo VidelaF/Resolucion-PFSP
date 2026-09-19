@@ -2,7 +2,6 @@ from aleatorios import generar_entero_aleatorio
 
 
 def mutar_intercambio(individuo):
-    """swap de dos posiciones al azar. retorna una copia, no modifica el original."""
     n = len(individuo)
     mutado = list(individuo)
     pos1 = generar_entero_aleatorio(0, n - 1)

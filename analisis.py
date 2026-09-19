@@ -1,7 +1,7 @@
 import os
 
 import matplotlib
-matplotlib.use("Agg")  # sin pantalla al correr desde consola
+matplotlib.use("Agg")  
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy import stats
@@ -17,7 +17,7 @@ ORDEN_METODOS = ["AG", "Memetico"]
 
 def cargar_resultados():
     datos = pd.read_csv(RUTA_ENTRADA)
-    # orden por tamaño de instancia, no alfabético
+    # orden por tamaño de instancia
     datos["instancia"] = pd.Categorical(datos["instancia"], categories=ORDEN_INSTANCIAS, ordered=True)
     datos["metodo"] = pd.Categorical(datos["metodo"], categories=ORDEN_METODOS, ordered=True)
     return datos

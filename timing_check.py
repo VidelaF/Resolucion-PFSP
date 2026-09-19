@@ -1,10 +1,3 @@
-"""Medición rápida: una corrida de Memético en ta071 con los parámetros nuevos
-(frecuencia_bl=50, k_mejores=2), más el costo de NEH aparte, para estimar el
-tiempo total del experimento completo (180 corridas) antes de lanzarlo.
-
-Uso: parado en la raíz del proyecto (junto a ag.py, memetico.py):
-    python timing_check.py
-"""
 import contextlib
 import io
 import os

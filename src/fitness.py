@@ -1,6 +1,4 @@
 def calcular_tabla_tiempos_finalizacion(secuencia, tiempos):
-    """tabla c(i,j): tiempo en que el trabajo i de la secuencia termina en la máquina j.
-    c(i,j) = max(c(i-1,j), c(i,j-1)) + p(secuencia[i], j)."""
     n_trabajos = len(secuencia)
     n_maquinas = len(tiempos)
 
@@ -17,23 +15,19 @@ def calcular_tabla_tiempos_finalizacion(secuencia, tiempos):
 
 
 def calcular_makespan(secuencia, tiempos):
-    """makespan (cmax): última celda de la tabla c(i,j)."""
+  
     tabla = calcular_tabla_tiempos_finalizacion(secuencia, tiempos)
     return tabla[-1][-1]
 
 
 if __name__ == "__main__":
-    # ejemplo del enunciado: 3 trabajos, 2 máquinas
-    # trabajo  m1  m2
-    # j1        5   3
-    # j2        2   6
-    # j3        4   4
+
     tiempos_ejemplo = [
-        [5, 2, 4],  # M1: J1, J2, J3
-        [3, 6, 4],  # M2: J1, J2, J3
+        [5, 2, 4],
+        [3, 6, 4],  
     ]
 
-    secuencia_123 = [0, 1, 2]  # π = (J1, J2, J3)
+    secuencia_123 = [0, 1, 2]
     tabla_123 = calcular_tabla_tiempos_finalizacion(secuencia_123, tiempos_ejemplo)
     print("Tabla C(i,j) para π = (J1, J2, J3):")
     print("            M1    M2")
@@ -48,7 +42,6 @@ if __name__ == "__main__":
     makespan_213 = calcular_makespan(secuencia_213, tiempos_ejemplo)
     print(f"π = (J2, J1, J3) -> Cmax = {makespan_213}")
 
-    # sanity check con ta001
     from leer_instancia import leer_instancia
 
     n, m, tiempos = leer_instancia("instances/taillard/ta001.txt")

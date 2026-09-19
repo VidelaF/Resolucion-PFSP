@@ -2,7 +2,7 @@ from fitness import calcular_makespan
 
 
 def busqueda_local_insercion(individuo, tiempos):
-    """mueve cada trabajo a cada posición posible; aplica la primera mejora encontrada
+    """mueve cada trabajo a cada posición posible, aplica la primera mejora encontrada
     (first-improvement) y reinicia, hasta llegar a un óptimo local."""
     mejor = list(individuo)
     fitness_mejor = calcular_makespan(mejor, tiempos)
@@ -32,12 +32,11 @@ def busqueda_local_insercion(individuo, tiempos):
 
 
 if __name__ == "__main__":
-    # ejemplo del enunciado: π=(J2,J1,J3) da cmax=15, mejor que π=(J1,J2,J3) con cmax=18
     tiempos_ejemplo = [
         [5, 2, 4],
         [3, 6, 4],
     ]
-    peor_secuencia = [0, 1, 2]  # π = (J1, J2, J3), Cmax = 18
+    peor_secuencia = [0, 1, 2]  
     mejorado = busqueda_local_insercion(peor_secuencia, tiempos_ejemplo)
     print(f"antes: {peor_secuencia} -> Cmax = {calcular_makespan(peor_secuencia, tiempos_ejemplo)}")
     print(f"después: {mejorado} -> Cmax = {calcular_makespan(mejorado, tiempos_ejemplo)}")

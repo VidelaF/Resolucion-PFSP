@@ -6,8 +6,6 @@ def leer_instancia(ruta):
     lineas = archivo.readlines()
     archivo.close()
 
-    # Descarte de líneas vacías y líneas de comentario # por ejemplo,
-    # que es como vienen los archivos oficiales de Taillard
     lineas_utiles = []
     for linea in lineas:
         linea = linea.strip()

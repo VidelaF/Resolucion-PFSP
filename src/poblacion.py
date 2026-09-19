@@ -2,7 +2,6 @@ from aleatorios import generar_entero_aleatorio
 
 
 def generar_permutacion_aleatoria(n_trabajos):
-    """fisher-yates: cada una de las n_trabajos! permutaciones tiene la misma probabilidad de salir."""
     permutacion = list(range(n_trabajos))
     for i in range(n_trabajos - 1, 0, -1):
         j = generar_entero_aleatorio(0, i)
@@ -11,7 +10,6 @@ def generar_permutacion_aleatoria(n_trabajos):
 
 
 def inicializar_poblacion(tam_poblacion, n_trabajos):
-    """lista de tam_poblacion permutaciones aleatorias independientes."""
     poblacion = []
     for _ in range(tam_poblacion):
         individuo = generar_permutacion_aleatoria(n_trabajos)

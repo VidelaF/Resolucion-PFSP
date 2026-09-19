@@ -3,10 +3,6 @@ import os
 
 
 def leer_parametros_memetico(argumentos):
-    """parsea y valida los parámetros del memético por línea de comandos.
-    frecuencia_bl: cada cuántas generaciones se aplica la búsqueda local.
-    k_mejores (opcional, por defecto 1): a cuántos de los mejores individuos se aplica cada vez.
-    retorna la tupla de parámetros, o termina el programa si alguno es inválido."""
     if len(argumentos) not in (7, 8):
         print("Error: número incorrecto de parámetros")
         print(

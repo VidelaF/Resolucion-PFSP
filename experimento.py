@@ -6,7 +6,7 @@ import random
 import sys
 import time
 
-# módulos de src/ en el path
+#módulos de src en el path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
 
 from ag import ejecutar_ag
@@ -16,26 +16,24 @@ from neh import construir_neh
 from rpd import obtener_mejor_conocido, calcular_rpd, nombre_instancia_desde_ruta
 
 
-# tres tamaños de instancia: chica, mediana y grande
+# tres tamaños
 INSTANCIAS = [
-    "instances/taillard/ta001.txt",  # 20 trabajos x 5 máquinas
-    "instances/taillard/ta041.txt",  # 50 trabajos x 10 máquinas
-    "instances/taillard/ta071.txt",  # 100 trabajos x 10 máquinas
+    "instances/taillard/ta001.txt",  #20 trabajos x 5 máquinas
+    "instances/taillard/ta041.txt",  #50 trabajos x 10 máquinas
+    "instances/taillard/ta071.txt",  #100 trabajos x 10 máquinas
 ]
-SEMILLAS = list(range(1, 31))  # 30 repeticiones por instancia y método
+SEMILLAS = list(range(1, 31))  #30 repeticiones por instancia y método
 TAM_POBLACION = 40
 PROB_CRUZA = 0.9
 PROB_MUTACION = 0.2
 NUM_GENERACIONES = 100
-# frecuencia de búsqueda local por instancia: en ta071 una pasada cuesta ~43s
-# y se mantiene en 50 (2 aplicaciones por corrida); en instancias chicas
-# una pasada es casi instantánea, así que se aplica más seguido
+
 FRECUENCIA_BL_POR_INSTANCIA = {
     "ta001": 10,
     "ta041": 25,
     "ta071": 50,
 }
-K_MEJORES_BL = 2  # además del mejor, búsqueda local sobre el segundo mejor
+K_MEJORES_BL = 2  #además del mejor aplicamos búsqueda local también sobre el segundo mejor
 
 RUTA_BEST_KNOWN = "instances/taillard/best_known.csv"
 RUTA_SALIDA = "resultados/experimento.csv"
@@ -47,17 +45,10 @@ COLUMNAS_CSV = [
 
 
 def ejecutar_una_corrida(metodo, tiempos, n_trabajos, semilla, frecuencia_bl, individuo_neh):
-    """corre ag o memético con la semilla dada. retorna (cmax, tiempo_segundos).
-
-    individuo_neh se recibe ya calculado (una vez por instancia, en main) en vez de
-    recalcularlo en cada corrida: NEH es determinista (no depende de la semilla), así que
-    recalcularlo en las 30 semillas de una misma instancia/método sería trabajo repetido
-    sin ningún beneficio.
-    """
-    random.seed(semilla)  # misma semilla en ag y memético: misma población inicial, comparación justa
+    random.seed(semilla)  #misma semilla en ag y memético: misma población inicial, comparación justa
     inicio = time.time()
 
-    with contextlib.redirect_stdout(io.StringIO()):  # silencia el progreso por generación
+    with contextlib.redirect_stdout(io.StringIO()):  #ilencia el progreso por generación
         if metodo == "AG":
             _, cmax = ejecutar_ag(
                 tiempos, n_trabajos, TAM_POBLACION, PROB_CRUZA, PROB_MUTACION, NUM_GENERACIONES,
@@ -93,9 +84,9 @@ def main():
             mejor_conocido = obtener_mejor_conocido(nombre_instancia, RUTA_BEST_KNOWN)
             frecuencia_bl = FRECUENCIA_BL_POR_INSTANCIA[nombre_instancia]
 
-            # NEH es determinista (no depende de la semilla): se calcula una sola vez por
-            # instancia y se reutiliza en las 30 semillas x 2 métodos, en vez de recalcularlo
-            # 60 veces por nada.
+            #NEH no depende de la semilla entonces lo calculamos una sola vez por
+            #instancia y se reutiliza en las 30 semillas x 2 métodos, en vez de recalcularlo
+            #60 veces por nada.
             individuo_neh = construir_neh(tiempos)
 
             for metodo in ("AG", "Memetico"):
@@ -124,7 +115,7 @@ def main():
                         "rpd": rpd_texto,
                         "tiempo_segundos": f"{tiempo_segundos:.3f}",
                     })
-                    archivo_csv.flush()  # no perder resultados si se corta a mitad de camino
+                    archivo_csv.flush()  
 
                     transcurrido_min = (time.time() - inicio_total) / 60
                     print(

@@ -1,16 +1,4 @@
-"""Versión del experimento dividida en bloques para correr en paralelo, uno por
-ventana de CMD, aprovechando los núcleos libres del procesador (no se toca la
-lógica interna de ag.py/memetico.py, cada bloque es un proceso Python
-independiente que corre un subconjunto de instancias).
-
-Uso: cuatro ventanas de CMD distintas, cada una parada en la raíz del proyecto:
-    python experimento_paralelo.py 1   -> ta071 (la más pesada, ~42 min)
-    python experimento_paralelo.py 2   -> ta090 (~32 min)
-    python experimento_paralelo.py 3   -> ta001 + ta041 + ta058 (~18 min)
-
-Cada bloque escribe su propio CSV en resultados/experimento_bloqueN.csv.
-Al terminar los 3, se juntan con unir_resultados.py en un solo
-resultados/experimento.csv (mismo formato que el experimento.py secuencial).
+"""se define experimento paralelo para correr el experimento simultanemante en 3 ventanas cmd distintas para agilizar el proceso.
 """
 import contextlib
 import csv
@@ -43,7 +31,7 @@ FRECUENCIA_BL_POR_INSTANCIA = {
 K_MEJORES_BL = 2
 RUTA_BEST_KNOWN = "instances/taillard/best_known.csv"
 
-# mismos 3 bloques que se acordó correr, balanceados por costo de cómputo real
+# mismos 3 bloques
 BLOQUES = {
     "1": ["instances/taillard/ta071.txt"],
     "2": ["instances/taillard/ta090.txt"],

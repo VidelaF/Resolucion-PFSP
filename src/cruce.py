@@ -2,7 +2,7 @@ from aleatorios import generar_entero_aleatorio
 
 
 def cruce_ox(padre1, padre2):
-    """order crossover: copia un segmento de padre1 y completa con el orden de padre2,
+    """ con order crossover copiamos un segmento de padre1 y completa con el orden de padre2,
     saltando lo ya copiado. evita duplicados, a diferencia de un cruce de un punto normal."""
     n = len(padre1)
     punto1 = generar_entero_aleatorio(0, n - 1)

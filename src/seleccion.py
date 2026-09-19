@@ -2,8 +2,6 @@ from aleatorios import generar_entero_aleatorio
 
 
 def seleccionar_por_torneo(poblacion, fitnesses, tam_torneo=2):
-    """elige tam_torneo individuos al azar (con reposición) y retorna el de menor makespan.
-    tam_torneo=2: torneo binario, presión de selección baja."""
     mejor_indice = generar_entero_aleatorio(0, len(poblacion) - 1)
     for _ in range(tam_torneo - 1):
         indice_candidato = generar_entero_aleatorio(0, len(poblacion) - 1)
