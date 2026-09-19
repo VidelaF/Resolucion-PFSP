@@ -16,11 +16,13 @@ from neh import construir_neh
 from rpd import obtener_mejor_conocido, calcular_rpd, nombre_instancia_desde_ruta
 
 
-# tres tamaños
+# 5 tamaños: 3 instancias base + 2 instancias duras de 20 máquinas (ta090, ta058)
 INSTANCIAS = [
     "instances/taillard/ta001.txt",  #20 trabajos x 5 máquinas
     "instances/taillard/ta041.txt",  #50 trabajos x 10 máquinas
     "instances/taillard/ta071.txt",  #100 trabajos x 10 máquinas
+    "instances/taillard/ta090.txt",  #100 trabajos x 20 máquinas (dura, B&B: 78s/128 GPUs)
+    "instances/taillard/ta058.txt",  #50 trabajos x 20 máquinas (dura, B&B: 13h17/256 GPUs)
 ]
 SEMILLAS = list(range(1, 31))  #30 repeticiones por instancia y método
 TAM_POBLACION = 40
@@ -32,6 +34,8 @@ FRECUENCIA_BL_POR_INSTANCIA = {
     "ta001": 10,
     "ta041": 25,
     "ta071": 50,
+    "ta090": 50,
+    "ta058": 30,
 }
 K_MEJORES_BL = 2  #además del mejor aplicamos búsqueda local también sobre el segundo mejor
 
